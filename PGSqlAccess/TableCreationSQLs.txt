@@ -1,0 +1,85 @@
+﻿The following SQL commands were used to create the DB and some sample tables:
+
+CREATE DATABASE "Patient"
+    WITH 
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    CONNECTION LIMIT = -1;
+
+COMMENT ON DATABASE "Patient"
+    IS 'Patient info DB';
+	
+	
+-----------------------------
+
+CREATE TABLE public."PatientInfo"
+(
+    "PatientID" uuid NOT NULL,
+    "PhysicianId" uuid NOT NULL,
+    "FirstAdmissionDate" date NOT NULL,
+    "LatestVisitDate" date,
+    "InsuranceId" uuid,
+    "PersonalInfoId" uuid NOT NULL,
+    CONSTRAINT "UniquePatId" UNIQUE ("PatientID"),
+    CONSTRAINT "UniqueInsuranceId" UNIQUE ("InsuranceId")
+)
+WITH (
+    OIDS = FALSE
+);
+
+ALTER TABLE public."PatientInfo"
+    OWNER to postgres;
+COMMENT ON TABLE public."PatientInfo"
+    IS 'Info about patients';
+	
+------------------------------	
+
+
+CREATE TABLE public."InsuranceInfo"
+(
+    "InsuranceId" uuid NOT NULL,
+    "PatientId" uuid NOT NULL,
+    "InsurancePlan" character varying(250) NOT NULL,
+    CONSTRAINT "InsuranceIdPrimary" PRIMARY KEY ("InsuranceId"),
+    CONSTRAINT "UniqueInsuranceId" UNIQUE ("InsuranceId")
+,
+    CONSTRAINT "PatientIdForiegnKey" FOREIGN KEY ("PatientId")
+        REFERENCES public."PatientInfo" ("PatientID") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT "InsuranceIdForiegnKey" FOREIGN KEY ("InsuranceId")
+        REFERENCES public."PatientInfo" ("InsuranceId") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+WITH (
+    OIDS = FALSE
+);
+
+ALTER TABLE public."InsuranceInfo"
+    OWNER to postgres;
+	
+-------------------------------
+
+CREATE TABLE public."PatientDetails"
+(
+    "Name" character varying(50) NOT NULL,
+    "PatientId" uuid NOT NULL,
+    "PhoneNum" integer,
+    "EmailId" character varying(50),
+    "Address" character varying(250),
+    CONSTRAINT "PatientIdPK" FOREIGN KEY ("PatientId")
+        REFERENCES public."PatientInfo" ("PatientID") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+WITH (
+    OIDS = FALSE
+);
+
+ALTER TABLE public."PatientDetails"
+    OWNER to postgres;
+COMMENT ON TABLE public."PatientDetails"
+    IS 'Contact and other details of the Patient';
+
+--------------------------------

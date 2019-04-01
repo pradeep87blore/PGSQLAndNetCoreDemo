@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.539
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreAndPGSQLDemo", "NETCoreAndPGSQLDemo\NETCoreAndPGSQLDemo.csproj", "{162FC102-BF01-4DAC-BB6C-7F9BF8D6777F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PGSqlAccess", "PGSqlAccess\PGSqlAccess.csproj", "{E38CDA43-E605-46EB-A195-C0574063D993}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{162FC102-BF01-4DAC-BB6C-7F9BF8D6777F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{162FC102-BF01-4DAC-BB6C-7F9BF8D6777F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{162FC102-BF01-4DAC-BB6C-7F9BF8D6777F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{162FC102-BF01-4DAC-BB6C-7F9BF8D6777F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E38CDA43-E605-46EB-A195-C0574063D993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E38CDA43-E605-46EB-A195-C0574063D993}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E38CDA43-E605-46EB-A195-C0574063D993}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E38CDA43-E605-46EB-A195-C0574063D993}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E317A82-B0F7-4744-A659-A92733EEE42B}
+	EndGlobalSection
+EndGlobal
