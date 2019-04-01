@@ -31,18 +31,17 @@ namespace PGSqlAccess
         {
             string serverIp = "", serverPort = "", userId = "", password = "", database = "";
 
-            if (!GetServerDetails(out serverIp, out serverPort, out userId, out password, out database))
+            if (!GetServerDetails(out serverIp, out userId, out password, out database))
             {
                 // Error has occured reading the config. Return false
                 connection = null;
                 return false;
             }
-            string connString = "Host=localhost;Username=postgres;Password=pradeep;Database=Patient";
+            //string connString = "Host=localhost;Username=postgres;Password=pradeep;Database=Patient";
 
-            /*string connString = String.Format("Server={0};Port={1};" +
-                                              "User Id={2};Password={3};Database={4};",
-                serverIp, serverPort, userId, password, database); */
-
+            // No need to pass the server port
+            string connString = String.Format("Server={0};User Id={1};Password={2};Database={3};",
+                serverIp, userId, password, database); 
 
             connection = new NpgsqlConnection(connString);
 
@@ -53,12 +52,11 @@ namespace PGSqlAccess
             return false;
         }
 
-        private bool GetServerDetails(out string serverIp, out string serverPort, 
-            out string userId, out string password, out string database)
+        private bool GetServerDetails(out string serverIp, out string userId, 
+            out string password, out string database)
         {
             // TODO: Move this to a json file and read the config from it
             serverIp = "localhost";
-            serverPort = "5432";
             userId = "postgres";
             password = "pradeep";
             database = "Patient";

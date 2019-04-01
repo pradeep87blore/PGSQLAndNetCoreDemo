@@ -35,16 +35,6 @@ namespace PGSqlAccess
                     throw new Exception("Failed to connect to the PGSQL DB");
                 }
 
-                /*
-                    patid uuid,
-                    patname character varying,
-                    phonenum integer,
-                    email character varying,
-                    address character varying,
-                    insuranceid uuid,
-                    insuranceplan character varying,
-                    physicianid uuid
-                 */
                 string sqlCmd =
                     String.Format(@"CALL spcreatepatient('{0}', '{1}', {2}, '{3}', '{4}', '{5}', '{6}', '{7}')",
                         patInfo.m_patientId, patInfo.m_patientName, patInfo.m_phoneNum,
@@ -72,5 +62,60 @@ namespace PGSqlAccess
             }
             return false;
         }
+
+        // Delete all the created patients
+        public bool DeleteAllPatients()
+        {
+            return false; 
+        }
+
+        // Return the count of the existing patients
+        public int GetPatientCount()
+        {
+            return 0;
+        }
+
+        // Fetch a specific patient's details
+        public bool GetPatient(out PatientInfo patInfo, out InsuranceInfo insuranceInfo,
+            out PhysicianDetails physDetails)
+        {
+            patInfo = null;
+            insuranceInfo = null;
+            physDetails = null;
+
+            return false;
+        }
+
+        // Get all patients' info
+        // Return the count of the retrieved patients
+        public int GetAllPatientsInfo(out List<PatientInfo> patInfoList)
+        {
+            patInfoList = null;
+            return 0;
+        }
+
+        // Get all insurance' info
+        // Return the count of the retrieved patients
+        public int GetAllInsuranceInfo(out List<InsuranceInfo> insInfoList)
+        {
+            insInfoList = null;
+            return 0;
+        }
+
+        // Get all Physicians' info
+        // Return the count of the retrieved patients
+        public int GetAllPhysicianInfo(out List<InsuranceInfo> physInfoList)
+        {
+            physInfoList = null;
+            return 0;
+        }
+
+        // Edit patient details
+        // Enable changing the name, contact details, insurance details and physician name
+        public bool UpdatePatientDetails(PatientInfo updatedPatInfo)
+        {
+            return false;
+        }
+
     }
 }
