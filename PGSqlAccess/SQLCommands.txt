@@ -82,4 +82,59 @@ ALTER TABLE public."PatientDetails"
 COMMENT ON TABLE public."PatientDetails"
     IS 'Contact and other details of the Patient';
 
---------------------------------
+--------------------------------	
+	
+	
+-- PROCEDURE: public.spretrievepatient(uuid)
+
+-- DROP PROCEDURE public.spretrievepatient(uuid);
+
+CREATE OR REPLACE PROCEDURE public.spretrievepatient(
+	uuid)
+LANGUAGE 'plpgsql'
+
+AS $BODY$
+BEGIN
+	SELECT "Name", "PatientId", "PhoneNum", "EmailId", "Address"
+	FROM public."PatientDetails"
+	WHERE "PatientId" = $1;
+	COMMIT;
+END;
+$BODY$;
+
+
+---------------------------------
+-- PROCEDURE: public.spcreatepatient(uuid, character varying, integer, character varying, character varying, uuid, character varying, uuid)
+
+-- DROP PROCEDURE public.spcreatepatient(uuid, character varying, integer, character varying, character varying, uuid, character varying, uuid);
+
+CREATE OR REPLACE PROCEDURE public.spcreatepatient(
+	patid uuid,
+	patname character varying,
+	phonenum integer,
+	email character varying,
+	address character varying,
+	insuranceid uuid,
+	insuranceplan character varying,
+	physicianid uuid)
+LANGUAGE 'plpgsql'
+
+AS $BODY$
+BEGIN
+
+	INSERT INTO public."PatientInfo"(
+		"PatientID", "PhysicianId", "FirstAdmissionDate", "LatestVisitDate", "InsuranceId", "PersonalInfoId")
+		VALUES (patId, physicianId, NOW(), NOW(), insuranceId, patId);	
+	
+	INSERT INTO public."PatientDetails"(
+		"Name", "PatientId", "PhoneNum", "EmailId", "Address")
+		VALUES (patName, patId, phoneNum, email, address);
+	
+	INSERT INTO public."InsuranceInfo"(
+		"InsuranceId", "PatientId", "InsurancePlan")
+		VALUES (insuranceId, patId, insurancePlan);
+	
+	
+	COMMIT;
+END;
+$BODY$;
