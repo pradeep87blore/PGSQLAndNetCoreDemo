@@ -185,28 +185,36 @@ $BODY$;
 -------------------
 
 
--- PROCEDURE: public.spselectpatients(uuid)
+-- FUNCTION: public.spselectpatients(uuid)
 
--- DROP PROCEDURE public.spselectpatients(uuid);
+-- DROP FUNCTION public.spselectpatients(uuid);
 
-CREATE OR REPLACE PROCEDURE public.spselectpatients(
+CREATE OR REPLACE FUNCTION public.spselectpatients(
 	patientid uuid)
-LANGUAGE 'plpgsql'
+    RETURNS refcursor
+    LANGUAGE 'plpgsql'
 
+    COST 100
+    VOLATILE 
 AS $BODY$
-BEGIN
-	SELECT "Name", public."PatientDetails"."PatientId", "PhoneNum", 
-	"EmailId", "Address", "PhysicianId", "FirstAdmissionDate", 
-	"LatestVisitDate", public."InsuranceInfo"."InsuranceId", "InsurancePlan"
-	FROM public."PatientDetails", public."PatientInfo", public."InsuranceInfo"
-	where "PatientDetails"."PatientId" = patientid 
-	and 
-	"PatientInfo"."PatientID" = patientid 
-	and
-	"InsuranceInfo"."PatientId" = patientid;
-	
-	
-END;
-$BODY$;
+    DECLARE
+      ref refcursor; -- Declare the cursor variable
+    BEGIN
+      OPEN ref FOR 
+	  SELECT "Name", public."PatientDetails"."PatientId", "PhoneNum", 
+		"EmailId", "Address", "PhysicianId", "FirstAdmissionDate", 
+		"LatestVisitDate", public."InsuranceInfo"."InsuranceId", "InsurancePlan"
+		FROM public."PatientDetails", public."PatientInfo", public."InsuranceInfo"
+		where "PatientDetails"."PatientId" = patientid 
+		and 
+		"PatientInfo"."PatientID" = patientid 
+		and
+		"InsuranceInfo"."PatientId" = patientid; -- Open the required cursror
+      RETURN ref;
+    END;
+    $BODY$;
+
+ALTER FUNCTION public.spselectpatients(uuid)
+    OWNER TO postgres;
 
 

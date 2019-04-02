@@ -13,11 +13,15 @@ namespace PGSqlAccess
         public string m_address;
         public Guid m_insuranceId;
 
-
         public PatientInfo(string patientName, int phoneNum, string emailId, 
-            string address, Guid insuranceId)
+            string address, Guid insuranceId, Guid patientId = default(Guid))
         {
-            m_patientId = Guid.NewGuid();
+            if(patientId == default(Guid))
+                m_patientId = Guid.NewGuid();
+            else
+            {
+                m_patientId = patientId;
+            }
 
             m_patientName = patientName;
             m_phoneNum = phoneNum;

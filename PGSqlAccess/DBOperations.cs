@@ -158,6 +158,7 @@ namespace PGSqlAccess
         }
 
         // Fetch a specific patient's details
+        // Using a direct SQL query here
         public bool GetPatient(Guid patientId, out PatientInfo patInfo, out InsuranceInfo insuranceInfo,
             out PhysicianDetails physDetails)
         {
@@ -177,9 +178,14 @@ namespace PGSqlAccess
                     throw new Exception("Failed to connect to the PGSQL DB");
                 }
                 
-                string sqlCmd = String.Format(@"call spselectpatients('{0}')", patientId);
+                string sqlCmd = "SELECT \"Name\", public.\"PatientDetails\".\"PatientId\", \"PhoneNum\", \"EmailId\", \"Address\", "+
+                                "\"PhysicianId\", \"FirstAdmissionDate\", \"LatestVisitDate\", public.\"InsuranceInfo\".\"InsuranceId\", "+
+                                "\"InsurancePlan\"  FROM public.\"PatientDetails\", public.\"PatientInfo\", public.\"InsuranceInfo\" where "+
+                                string.Format("\"PatientDetails\".\"PatientId\" = '{0}' and \"PatientInfo\".\"PatientID\" = '{0}' and\"InsuranceInfo\".\"PatientId\" = '{0}';",patientId);
                 using (var cmd = new NpgsqlCommand(sqlCmd, connection))
                 {
+                    cmd.CommandType = CommandType.Text;
+
                     using (var reader = cmd.ExecuteReader())
                     {
                         reader.Read();
@@ -188,19 +194,22 @@ namespace PGSqlAccess
                         else
                         {
                             /*
-                            Name", public."PatientDetails"."PatientId", "PhoneNum", 
-
-                            "EmailId", "Address", "PhysicianId", "FirstAdmissionDate", 
-                            "LatestVisitDate", public."InsuranceInfo"."InsuranceId", "InsurancePlan"
-                            */
-
+                             * SELECT "Name", public."PatientDetails"."PatientId", "PhoneNum", 
+		"EmailId", "Address", "PhysicianId", "FirstAdmissionDate", 
+		"LatestVisitDate", public."InsuranceInfo"."InsuranceId", "InsurancePlan"
+		FROM public."PatientDetails", public."PatientInfo", public."InsuranceInfo"
+		where "PatientDetails"."PatientId" = patientid 
+		and 
+		"PatientInfo"."PatientID" = patientid 
+		and
+		"InsuranceInfo"."PatientId" = patientid;
+                             */
+                            var name = reader[0];
                             patInfo = new PatientInfo(reader.GetString(0), reader.GetInt32(2),
-                                reader.GetString(3), reader.GetString(4), reader.GetGuid(8));
-                            insuranceInfo = null;
-                            physDetails = null;
+                                reader.GetString(3), reader.GetString(4), reader.GetGuid(8), reader.GetGuid(1));
+                            insuranceInfo = new InsuranceInfo(patientId, reader.GetString(9));
+                            physDetails = new PhysicianDetails("ABCD", "DEFH"); // TODO: Physician details are not stored. Need to add these
 
-                            var value = reader.GetInt64(0);
-                            patCount = Int32.Parse(reader[0].ToString());
                         }
                     }
                 }
