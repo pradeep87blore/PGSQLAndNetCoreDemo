@@ -14,13 +14,40 @@ namespace PatientDBTester
         };
 
         [Fact]
-        public void Test1()
+        public void AddPatientsTest()
         {
+            int patientCount = 25;
             DBOperations dbOperations = DBOperations.GetInstance();
-            Assert.True(AddNewPatients(25));
-
-
+            Assert.True(AddNewPatients(patientCount));
         }
+
+        [Fact]
+        public void CheckForNewPatientsTest()
+        {
+            int newPatientCount = 15;
+            DBOperations dbOperations = DBOperations.GetInstance();
+            int initialPatientCount = DBOperations.GetInstance().GetPatientCount();
+            Assert.True(AddNewPatients(newPatientCount));
+            int updatedPatientCount = DBOperations.GetInstance().GetPatientCount();
+
+            Assert.True((updatedPatientCount - initialPatientCount) == newPatientCount);
+        }
+
+        [Fact]
+        public void DeletePatientsTest()
+        {
+            int newPatientCount = 15;
+            DBOperations dbOperations = DBOperations.GetInstance();
+            int initialPatientCount = DBOperations.GetInstance().GetPatientCount();
+            Assert.True(AddNewPatients(newPatientCount));
+            int updatedPatientCount = DBOperations.GetInstance().GetPatientCount();
+            Assert.True((updatedPatientCount - initialPatientCount) == newPatientCount);
+
+            Assert.True(DBOperations.GetInstance().DeleteAllPatients());
+
+            Assert.Equal(0, DBOperations.GetInstance().GetPatientCount());
+        }
+
 
         private bool AddNewPatients(int numOfPatientsToAdd)
         {
