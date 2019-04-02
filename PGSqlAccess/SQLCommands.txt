@@ -1,5 +1,7 @@
 ﻿The following SQL commands were used to create the DB and some sample tables:
 
+Note that these SQL commands were created using the PGADMIN4 GUI options. 
+
 CREATE DATABASE "Patient"
     WITH 
     OWNER = postgres
@@ -138,3 +140,27 @@ BEGIN
 	COMMIT;
 END;
 $BODY$;
+
+-------------------------------
+
+-- PROCEDURE: public.sppatientcount(bigint)
+
+-- DROP PROCEDURE public.sppatientcount(bigint);
+
+CREATE OR REPLACE PROCEDURE public.sppatientcount(INOUT counter bigint)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    select COUNT(*) into counter FROM public."PatientDetails";
+END;
+$$;	  
+
+--> Invoking this SP from the PGADMIN:
+DO $$
+DECLARE counter bigint := 0;
+BEGIN
+  CALL sppatientcount(counter);
+  RAISE NOTICE 'counter = %', counter;  -- prints actual patient count
+END
+$$;
+

@@ -38,5 +38,10 @@ namespace PGSqlAccess
             }
         }
 
+        public int GetPatientCount()
+        {
+            return DBOperations.GetInstance().GetPatientCount();
+        }
+
     }
 }

@@ -72,7 +72,49 @@ namespace PGSqlAccess
         // Return the count of the existing patients
         public int GetPatientCount()
         {
-            return 0;
+            NpgsqlConnection connection = null;
+
+            int patCount = 0;
+            try
+            {
+                PGSqlAccessHelper pgaccess = PGSqlAccessHelper.GetInstance();
+
+                if (!pgaccess.ConnectToDB(out connection))
+                {
+                    throw new Exception("Failed to connect to the PGSQL DB");
+                }
+
+                Int64 counter = 0; // TODO: This is of no use now. Need to find out how to discard this
+                string sqlCmd = String.Format(@"call sppatientcount('{0}')", counter);
+                using (var cmd = new NpgsqlCommand(sqlCmd, connection))
+                {
+                    //cmd.Parameters.AddWithValue("counter", counter);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        reader.Read();
+                        if (reader.HasRows == false)
+                            return 0; // Error in reading the patient count
+                        else
+                        {
+                            var value = reader.GetInt64(0);
+                            patCount = Int32.Parse(reader[0].ToString());
+                        }
+                    }
+                }
+                return patCount;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                if ((connection != null) && (connection.State != ConnectionState.Open))
+                {
+                    connection.Close();
+                }
+            }
+            return patCount;
         }
 
         // Fetch a specific patient's details
