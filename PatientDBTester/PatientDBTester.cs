@@ -13,6 +13,10 @@ namespace PatientDBTester
             "Sofia", "Alexander"
         };
 
+        /*
+         *  Facts are tests which are always true. They test invariant conditions.
+            Theories are tests which are only true for a particular set of data.
+         */
         [Fact]
         public void AddPatientsTest()
         {
@@ -48,27 +52,69 @@ namespace PatientDBTester
             Assert.Equal(0, DBOperations.GetInstance().GetPatientCount());
         }
 
+        [Fact]
+        public void FetchPatientInfoTest()
+        {
+            DBOperations dbOperations = DBOperations.GetInstance();
+            int initialPatientCount = DBOperations.GetInstance().GetPatientCount();
+            Guid newPatientId = Guid.Empty;
+
+            Assert.True(AddSinglePatient(out newPatientId));
+
+            PatientInfo patInfo;
+            InsuranceInfo insuranceInfo;
+            PhysicianDetails physDetails;
+
+            Assert.True(DBOperations.GetInstance().GetPatient(
+                newPatientId, out patInfo, out insuranceInfo, out physDetails));
+
+            Console.WriteLine(patInfo.ToString());
+
+            Assert.Equal(newPatientId, patInfo.m_patientId);
+            Assert.Equal(newPatientId, insuranceInfo.m_patientId);
+        }
+
+
 
         private bool AddNewPatients(int numOfPatientsToAdd)
         {
-            var rand = new Random();
+            
 
             for (int iIndex = 0; iIndex < numOfPatientsToAdd; iIndex++)
             {
-                string name = commonNames[rand.Next(commonNames.Length - 1)];
-                PatientInfo patIfno = new PatientInfo(name, rand.Next(11111, 99999),
-                    name + "@" + "abcd.com", "aaaa", Guid.Empty);
-                InsuranceInfo insuranceInfo = new InsuranceInfo(patIfno.m_patientId, "BasicMedicalPlan");
-                patIfno.m_insuranceId = insuranceInfo.m_insuranceId;
-                PhysicianDetails physicianDetails =
-                    new PhysicianDetails(commonNames[rand.Next(commonNames.Length - 1)], "General Medicine");
-
-                if (!DBOperations.GetInstance().CreateNewPatient(patIfno, insuranceInfo, physicianDetails))
+                Guid newPatientId = Guid.Empty;
+                if (!AddSinglePatient(out newPatientId)) // newPatientId not used here
+                {
                     return false;
+                }
             }
 
             return true;
         }
 
+        private bool AddSinglePatient(out Guid newPatientId)
+        {
+            var rand = new Random();
+
+            newPatientId = Guid.Empty;
+
+            string name = commonNames[rand.Next(commonNames.Length - 1)];
+            // Create a random patient info
+            PatientInfo patIfno = new PatientInfo(name, rand.Next(11111, 99999),
+                name + "@" + "abcd.com", "aaaa", Guid.Empty);
+
+            
+            InsuranceInfo insuranceInfo = new InsuranceInfo(patIfno.m_patientId, "BasicMedicalPlan");
+            patIfno.m_insuranceId = insuranceInfo.m_insuranceId;
+            PhysicianDetails physicianDetails =
+                new PhysicianDetails(commonNames[rand.Next(commonNames.Length - 1)], "General Medicine");
+
+            if (!DBOperations.GetInstance().CreateNewPatient(patIfno, insuranceInfo, physicianDetails))
+                return false;
+
+            newPatientId = patIfno.m_patientId;
+
+            return true;
+        }
     }
 }

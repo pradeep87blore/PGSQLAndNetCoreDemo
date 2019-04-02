@@ -25,5 +25,15 @@ namespace PGSqlAccess
             m_address = address;
             m_insuranceId = insuranceId;
         }
+
+        public override string ToString()
+        {
+            string printString =
+                string.Format(
+                    "Patient Name: {0}, Patient Id: {1}, Phone num: {2}, Email: {3}, Address = {4}, InsuranceId: = {5}",
+                    m_patientName, m_patientId, m_phoneNum, m_emailId, m_address, m_insuranceId);
+
+            return printString;
+        }
     }
 }

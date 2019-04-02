@@ -181,3 +181,32 @@ BEGIN
 	TRUNCATE public."InsuranceInfo" CASCADE;
 END;
 $BODY$;
+
+-------------------
+
+
+-- PROCEDURE: public.spselectpatients(uuid)
+
+-- DROP PROCEDURE public.spselectpatients(uuid);
+
+CREATE OR REPLACE PROCEDURE public.spselectpatients(
+	patientid uuid)
+LANGUAGE 'plpgsql'
+
+AS $BODY$
+BEGIN
+	SELECT "Name", public."PatientDetails"."PatientId", "PhoneNum", 
+	"EmailId", "Address", "PhysicianId", "FirstAdmissionDate", 
+	"LatestVisitDate", public."InsuranceInfo"."InsuranceId", "InsurancePlan"
+	FROM public."PatientDetails", public."PatientInfo", public."InsuranceInfo"
+	where "PatientDetails"."PatientId" = patientid 
+	and 
+	"PatientInfo"."PatientID" = patientid 
+	and
+	"InsuranceInfo"."PatientId" = patientid;
+	
+	
+END;
+$BODY$;
+
+

@@ -25,6 +25,8 @@ namespace PGSqlAccess
 
             return instance;
         }
+
+        // TODO: Physician name not used and stored anywhere. Create a separate table for this
         public bool CreateNewPatient(PatientInfo patInfo,
            InsuranceInfo insuranceInfo,
             PhysicianDetails physDetails)
@@ -73,7 +75,6 @@ namespace PGSqlAccess
         {
             NpgsqlConnection connection = null;
 
-            int patCount = 0;
             try
             {
                 PGSqlAccessHelper pgaccess = PGSqlAccessHelper.GetInstance();
@@ -157,12 +158,65 @@ namespace PGSqlAccess
         }
 
         // Fetch a specific patient's details
-        public bool GetPatient(out PatientInfo patInfo, out InsuranceInfo insuranceInfo,
+        public bool GetPatient(Guid patientId, out PatientInfo patInfo, out InsuranceInfo insuranceInfo,
             out PhysicianDetails physDetails)
         {
             patInfo = null;
             insuranceInfo = null;
             physDetails = null;
+
+            NpgsqlConnection connection = null;
+
+            int patCount = 0;
+            try
+            {
+                PGSqlAccessHelper pgaccess = PGSqlAccessHelper.GetInstance();
+
+                if (!pgaccess.ConnectToDB(out connection))
+                {
+                    throw new Exception("Failed to connect to the PGSQL DB");
+                }
+                
+                string sqlCmd = String.Format(@"call spselectpatients('{0}')", patientId);
+                using (var cmd = new NpgsqlCommand(sqlCmd, connection))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        reader.Read();
+                        if (reader.HasRows == false)
+                            return false; // Matching patient not found
+                        else
+                        {
+                            /*
+                            Name", public."PatientDetails"."PatientId", "PhoneNum", 
+
+                            "EmailId", "Address", "PhysicianId", "FirstAdmissionDate", 
+                            "LatestVisitDate", public."InsuranceInfo"."InsuranceId", "InsurancePlan"
+                            */
+
+                            patInfo = new PatientInfo(reader.GetString(0), reader.GetInt32(2),
+                                reader.GetString(3), reader.GetString(4), reader.GetGuid(8));
+                            insuranceInfo = null;
+                            physDetails = null;
+
+                            var value = reader.GetInt64(0);
+                            patCount = Int32.Parse(reader[0].ToString());
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                if ((connection != null) && (connection.State != ConnectionState.Open))
+                {
+                    connection.Close();
+                }
+            }
 
             return false;
         }

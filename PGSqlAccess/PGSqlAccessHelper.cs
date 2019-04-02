@@ -29,7 +29,7 @@ namespace PGSqlAccess
         // the server 
         public bool ConnectToDB(out NpgsqlConnection connection)
         {
-            string serverIp = "", serverPort = "", userId = "", password = "", database = "";
+            string serverIp = "", userId = "", password = "", database = "";
 
             if (!GetServerDetails(out serverIp, out userId, out password, out database))
             {
