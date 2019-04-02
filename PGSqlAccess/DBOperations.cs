@@ -6,10 +6,15 @@ using System.Text;
 
 namespace PGSqlAccess
 {
-   
+
     public class DBOperations
     {
         private static DBOperations instance = null;
+
+        DBOperations() // Private constructor, to enforce the use of the singleton instance
+        {
+
+        }
 
         public static DBOperations GetInstance()
         {
@@ -20,7 +25,7 @@ namespace PGSqlAccess
 
             return instance;
         }
-        public bool CreateNewPatient(PatientInfo patInfo, 
+        public bool CreateNewPatient(PatientInfo patInfo,
            InsuranceInfo insuranceInfo,
             PhysicianDetails physDetails)
         {
@@ -55,7 +60,7 @@ namespace PGSqlAccess
             }
             finally
             {
-                if((connection != null) && (connection.State != ConnectionState.Open))
+                if ((connection != null) && (connection.State != ConnectionState.Open))
                 {
                     connection.Close();
                 }
