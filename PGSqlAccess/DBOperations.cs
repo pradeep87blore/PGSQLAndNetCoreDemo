@@ -66,7 +66,41 @@ namespace PGSqlAccess
         // Delete all the created patients
         public bool DeleteAllPatients()
         {
-            return false; 
+            NpgsqlConnection connection = null;
+
+            int patCount = 0;
+            try
+            {
+                PGSqlAccessHelper pgaccess = PGSqlAccessHelper.GetInstance();
+
+                if (!pgaccess.ConnectToDB(out connection))
+                {
+                    throw new Exception("Failed to connect to the PGSQL DB");
+                }
+
+                string sqlCmd = "call spdeleteallpatients()";
+                using (var cmd = new NpgsqlCommand(sqlCmd, connection))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        // Nothing to do here
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                if ((connection != null) && (connection.State != ConnectionState.Open))
+                {
+                    connection.Close();
+                }
+            }
+
+            return false;
         }
 
         // Return the count of the existing patients

@@ -20,7 +20,22 @@ namespace PGSqlAccess
         {
             
         }
-        public void AddNewPatients(int numOfPatientsToAdd)
+
+        public void TestDBOperations()
+        {
+            Console.WriteLine("Adding 10 patients to the DB");
+            AddNewPatients(10);
+
+            Console.WriteLine(GetPatientCount() + " patients in the system now");
+
+            Console.WriteLine("Deleting all the patients");
+
+            DeleteAllPatients();
+
+            Console.WriteLine(GetPatientCount() + " patients in the system now");
+        }
+
+        private void AddNewPatients(int numOfPatientsToAdd)
         {
             var rand = new Random();
 
@@ -38,9 +53,14 @@ namespace PGSqlAccess
             }
         }
 
-        public int GetPatientCount()
+        private int GetPatientCount()
         {
             return DBOperations.GetInstance().GetPatientCount();
+        }
+
+        private bool DeleteAllPatients()
+        {
+            return DBOperations.GetInstance().DeleteAllPatients();
         }
 
     }

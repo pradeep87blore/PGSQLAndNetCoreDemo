@@ -164,3 +164,20 @@ BEGIN
 END
 $$;
 
+-------------------
+
+-- PROCEDURE: public.spdeleteallpatients()
+
+-- DROP PROCEDURE public.spdeleteallpatients();
+
+CREATE OR REPLACE PROCEDURE public.spdeleteallpatients(
+	)
+LANGUAGE 'plpgsql'
+
+AS $BODY$
+BEGIN
+	TRUNCATE public."PatientDetails" CASCADE;  -- cascade removes dependent entries from other tables too
+	TRUNCATE public."PatientInfo" CASCADE;
+	TRUNCATE public."InsuranceInfo" CASCADE;
+END;
+$BODY$;

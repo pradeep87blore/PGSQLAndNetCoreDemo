@@ -12,9 +12,7 @@ namespace NETCoreAndPGSQLDemo
             Console.WriteLine("Hello World!");
 
             DBTester dbTester = new DBTester();
-            //dbTester.AddNewPatients(10);
-
-            Console.WriteLine(dbTester.GetPatientCount() + " patients in the system now");
+            dbTester.TestDBOperations();
 
             Console.ReadLine(); // To stop the console application from exiting
         }
